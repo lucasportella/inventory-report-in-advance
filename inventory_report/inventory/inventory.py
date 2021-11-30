@@ -1,5 +1,6 @@
 import csv
 import json
+import xmltodict
 from inventory_report.reports.simple_report import SimpleReport
 from inventory_report.reports.complete_report import CompleteReport
 
@@ -40,7 +41,9 @@ class Inventory:
     def xml_parser(cls, path):
         with open(path, "r", encoding="utf-8") as file:
             my_xml = file.read()
-            return my_xml
+            data = xmltodict.parse(my_xml)
+            data = [dict(entry) for entry in data['dataset']['record']]
+            return data
 
 
 some_path = "inventory_report/data/inventory.json"
@@ -136,6 +139,6 @@ test_json = [
         "instrucoes_de_armazenamento": "instrucao 10",
     },
 ]
-print(
-    Inventory.import_data("inventory_report/data/inventory.csv", "completo")
-)
+
+print(Inventory.import_data("inventory_report/data/inventory.xml", "completo"))
+
