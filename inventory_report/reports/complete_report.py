@@ -19,7 +19,6 @@ class CompleteReport(SimpleReport):
     @classmethod
     def get_products_quantity(cls, data):
         companies_products = cls.generate_products_object(data)
-        print(companies_products)
         for product in data:
             companies_products[product["nome_da_empresa"]] += 1
         result = "Produtos estocados por empresa: \n"
