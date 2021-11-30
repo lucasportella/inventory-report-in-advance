@@ -2,47 +2,36 @@ from inventory_report.reports.simple_report import SimpleReport
 
 
 class CompleteReport(SimpleReport):
-    def get_products_quantity(cls):
-        return True
+    @classmethod
+    def generate_products_object(cls, data):
+        # usar sort pq por algum motivo o primeiro for não começa
+        #  o loop pela ordem dos objetos
+        data.sort(key=lambda a: a["id"])
+        companies = []
+        for company in data:
+            if company["nome_da_empresa"] not in companies:
+                companies.append(company["nome_da_empresa"])
+        companies_products = {}
+        for company in companies:
+            companies_products[company] = 0
+        return companies_products
 
+    @classmethod
+    def get_products_quantity(cls, data):
+        companies_products = cls.generate_products_object(data)
+        print(companies_products)
+        for product in data:
+            companies_products[product["nome_da_empresa"]] += 1
+        result = "Produtos estocados por empresa: \n"
+        # objetos em python aceitam iteração, chave é o product, valor é o
+        # companies_products[product]
+        for product in companies_products:
+            result += f"- {product}: {companies_products[product]}\n"
+        return result
 
-test_data = [
-        {
-            "id": 1,
-            "nome_do_produto": "CALENDULA OFFICINALIS FLOWERING TOP",
-            "nome_da_empresa": "Forces of Nature",
-            "data_de_fabricacao": "2020-07-04",
-            "data_de_validade": "2023-02-09",
-            "numero_de_serie": "FR48 2002 7680 97V4 W6FO LEBT 081",
-            "instrucoes_de_armazenamento": "in blandit ultrices enim",
-        },
-        {
-            "id": 2,
-            "nome_do_produto": "sodium ferric gluconate complex",
-            "nome_da_empresa": "sanofi-aventis U.S. LLC",
-            "data_de_fabricacao": "2020-05-31",
-            "data_de_validade": "2023-01-17",
-            "numero_de_serie": "SE95 2662 8860 5529 8299 2861",
-            "instrucoes_de_armazenamento": "duis bibendum morbi",
-        },
-        {
-            "id": 3,
-            "nome_do_produto": "Dexamethasone Sodium Phosphate",
-            "nome_da_empresa": "sanofi-aventis U.S. LLC",
-            "data_de_fabricacao": "2019-09-13",
-            "data_de_validade": "2023-02-13",
-            "numero_de_serie": "BA52 2034 8595 7904 7131",
-            "instrucoes_de_armazenamento": "morbi quis tortor id",
-        },
-        {
-            "id": 4,
-            "nome_do_produto": "Uricum acidum, Benzoicum acidum",
-            "nome_da_empresa": "Newton Laboratories",
-            "data_de_fabricacao": "2019-11-08",
-            "data_de_validade": "2019-11-25",
-            "numero_de_serie": "FR38 9203 3060 400T QQ8B HHS0 Q46",
-            "instrucoes_de_armazenamento": "velit eu est congue elementum",
-        },
-    ]
-
-# print(CompleteReport.generate(test_data))
+    @classmethod
+    def generate(cls, data):
+        simple_report = SimpleReport.generate(data)
+        products_quantity = cls.get_products_quantity(data)
+        complete_report = f"{simple_report}\n{products_quantity}"
+        return complete_report
