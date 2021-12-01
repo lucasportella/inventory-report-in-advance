@@ -43,9 +43,10 @@ class Inventory:
             my_xml = file.read()
             data = xmltodict.parse(my_xml)
             data = [dict(entry) for entry in data["dataset"]["record"]]
+            return data
             # tag root dataset, tags filhas record, xml parse retorna uma
             # serie de dicionarios ordenados, list comprehension para percorrer
             #  sobre os dicionarios pega só as tags dentro da tag record e joga
             #  dentro de uma classe dict, no fim temos uma lista de dicionarios
             #  tradicional
-            return data
+            # https://stackoverflow.com/questions/40154727/how-to-use-xmltodict-to-get-items-out-of-an-xml-file
