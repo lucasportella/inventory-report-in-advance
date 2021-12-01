@@ -2,7 +2,7 @@ from collections.abc import Iterator
 
 
 class InventoryIterator(Iterator):
-    def init(self, data):
+    def __init__(self, data):
         self.data = data
         self.counter = 0
 
